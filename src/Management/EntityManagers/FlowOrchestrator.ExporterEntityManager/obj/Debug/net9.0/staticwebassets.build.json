@@ -1,0 +1,24 @@
+{
+  "Version": 1,
+  "Hash": "tUG5nCyLXRsTw+N25XZmEVLkn+R6ku8XCAgGmnmFjFY=",
+  "Source": "FlowOrchestrator.ExporterEntityManager",
+  "BasePath": "_content/FlowOrchestrator.ExporterEntityManager",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj",
+      "Version": 2,
+      "Source": "FlowOrchestrator.EntityManagerBase",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

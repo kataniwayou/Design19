@@ -1,0 +1,6 @@
+@FlowOrchestrator.ImporterEntityManager_HostAddress = http://localhost:5269
+
+GET {{FlowOrchestrator.ImporterEntityManager_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

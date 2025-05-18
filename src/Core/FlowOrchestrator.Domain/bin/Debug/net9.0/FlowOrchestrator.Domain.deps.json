@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "FlowOrchestrator.Domain/1.0.0": {
+        "dependencies": {
+          "FlowOrchestrator.Abstractions": "1.0.0",
+          "FlowOrchestrator.Common": "1.0.0"
+        },
+        "runtime": {
+          "FlowOrchestrator.Domain.dll": {}
+        }
+      },
+      "FlowOrchestrator.Abstractions/1.0.0": {
+        "dependencies": {
+          "FlowOrchestrator.Common": "1.0.0"
+        },
+        "runtime": {
+          "FlowOrchestrator.Abstractions.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "FlowOrchestrator.Common/1.0.0": {
+        "runtime": {
+          "FlowOrchestrator.Common.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "FlowOrchestrator.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FlowOrchestrator.Abstractions/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FlowOrchestrator.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

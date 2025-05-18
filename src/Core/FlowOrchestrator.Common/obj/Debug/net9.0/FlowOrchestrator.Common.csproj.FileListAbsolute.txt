@@ -1,0 +1,11 @@
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\bin\Debug\net9.0\FlowOrchestrator.Common.deps.json
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\bin\Debug\net9.0\FlowOrchestrator.Common.dll
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\bin\Debug\net9.0\FlowOrchestrator.Common.pdb
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.AssemblyInfoInputs.cache
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.AssemblyInfo.cs
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.csproj.CoreCompileInputs.cache
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.dll
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\refint\FlowOrchestrator.Common.dll
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\FlowOrchestrator.Common.pdb
+C:\Users\UserL\source\repos\Design19\src\Core\FlowOrchestrator.Common\obj\Debug\net9.0\ref\FlowOrchestrator.Common.dll

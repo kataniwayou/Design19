@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Base\FlowOrchestrator.EntityManagerBase\FlowOrchestrator.EntityManagerBase.csproj" />
+    <ProjectReference Include="..\..\..\Core\FlowOrchestrator.Common\FlowOrchestrator.Common.csproj" />
+    <ProjectReference Include="..\..\..\Core\FlowOrchestrator.Domain\FlowOrchestrator.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Core\FlowOrchestrator.Abstractions\FlowOrchestrator.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Core\FlowOrchestrator.Infrastructure.Common\FlowOrchestrator.Infrastructure.Common.csproj" />
+  </ItemGroup>
+
+</Project>

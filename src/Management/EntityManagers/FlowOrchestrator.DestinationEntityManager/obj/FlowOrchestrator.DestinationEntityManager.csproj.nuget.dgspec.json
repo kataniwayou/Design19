@@ -1,0 +1,500 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Management\\EntityManagers\\FlowOrchestrator.DestinationEntityManager\\FlowOrchestrator.DestinationEntityManager.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj",
+        "projectName": "FlowOrchestrator.EntityManagerBase",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "MassTransit.RabbitMQ": {
+              "target": "Package",
+              "version": "[8.4.1, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "OpenTelemetry.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "OpenTelemetry.Instrumentation.AspNetCore": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "OpenTelemetry.Instrumentation.Http": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj",
+        "projectName": "FlowOrchestrator.Abstractions",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj",
+        "projectName": "FlowOrchestrator.Common",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj",
+        "projectName": "FlowOrchestrator.Domain",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj",
+        "projectName": "FlowOrchestrator.Infrastructure.Common",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "MassTransit": {
+              "target": "Package",
+              "version": "[8.4.1, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.4.0, )"
+            },
+            "OpenTelemetry": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Management\\EntityManagers\\FlowOrchestrator.DestinationEntityManager\\FlowOrchestrator.DestinationEntityManager.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Management\\EntityManagers\\FlowOrchestrator.DestinationEntityManager\\FlowOrchestrator.DestinationEntityManager.csproj",
+        "projectName": "FlowOrchestrator.DestinationEntityManager",
+        "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Management\\EntityManagers\\FlowOrchestrator.DestinationEntityManager\\FlowOrchestrator.DestinationEntityManager.csproj",
+        "packagesPath": "C:\\Users\\UserL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Management\\EntityManagers\\FlowOrchestrator.DestinationEntityManager\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\UserL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Base\\FlowOrchestrator.EntityManagerBase\\FlowOrchestrator.EntityManagerBase.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Abstractions\\FlowOrchestrator.Abstractions.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Common\\FlowOrchestrator.Common.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Domain\\FlowOrchestrator.Domain.csproj"
+              },
+              "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj": {
+                "projectPath": "C:\\Users\\UserL\\source\\repos\\Design19\\src\\Core\\FlowOrchestrator.Infrastructure.Common\\FlowOrchestrator.Infrastructure.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
