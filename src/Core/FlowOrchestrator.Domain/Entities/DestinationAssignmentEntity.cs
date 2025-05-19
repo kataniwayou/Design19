@@ -20,9 +20,24 @@ public class DestinationAssignmentEntity : AbstractEntity, IDestinationAssignmen
     public string ExporterId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the exporter type.
+    /// </summary>
+    public string ExporterType { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the assignment configuration.
     /// </summary>
     public Dictionary<string, object> Configuration { get; set; } = new Dictionary<string, object>();
+
+    /// <summary>
+    /// Gets or sets the configuration parameters.
+    /// </summary>
+    public Dictionary<string, string> ConfigurationParameters { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
+    public string Status { get; set; } = "Active";
 
     /// <summary>
     /// Gets the assignment configuration.

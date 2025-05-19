@@ -63,6 +63,16 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     }
 
     /// <summary>
+    /// Creates an entity.
+    /// </summary>
+    /// <param name="entity">The entity to create.</param>
+    /// <returns>The created entity.</returns>
+    public async Task<TEntity> CreateAsync(TEntity entity)
+    {
+        return await AddAsync(entity);
+    }
+
+    /// <summary>
     /// Updates an entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>

@@ -25,6 +25,11 @@ public class FlowEntity : AbstractEntity, IFlowEntity
     public List<string> ProcessingChainIds { get; set; } = new List<string>();
 
     /// <summary>
+    /// Gets or sets the identifier of the processing chain.
+    /// </summary>
+    public string ProcessingChainId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the identifiers of the exporter services.
     /// </summary>
     public List<string> ExporterIds { get; set; } = new List<string>();
@@ -33,6 +38,11 @@ public class FlowEntity : AbstractEntity, IFlowEntity
     /// Gets or sets the flow branch configuration.
     /// </summary>
     public Dictionary<string, FlowBranchConfiguration> BranchConfigurations { get; set; } = new Dictionary<string, FlowBranchConfiguration>();
+
+    /// <summary>
+    /// Gets or sets the branch identifiers.
+    /// </summary>
+    public List<string> BranchIds { get; set; } = new List<string>();
 
     /// <summary>
     /// Gets or sets the execution mode.
@@ -48,6 +58,46 @@ public class FlowEntity : AbstractEntity, IFlowEntity
     /// Gets or sets the status.
     /// </summary>
     public string Status { get; set; } = "Draft";
+
+    /// <summary>
+    /// Gets or sets the source assignment identifier.
+    /// </summary>
+    public string SourceAssignmentId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the destination assignment identifier.
+    /// </summary>
+    public string DestinationAssignmentId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the destination assignment identifiers.
+    /// </summary>
+    public List<string> DestinationAssignmentIds { get; set; } = new List<string>();
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the flow is enabled.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the created at timestamp.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the updated at timestamp.
+    /// </summary>
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the created by user.
+    /// </summary>
+    public string CreatedBy { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the updated by user.
+    /// </summary>
+    public string UpdatedBy { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the identifiers of the processing chains.

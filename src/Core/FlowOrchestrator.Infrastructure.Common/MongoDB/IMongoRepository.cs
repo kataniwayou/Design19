@@ -38,6 +38,13 @@ public interface IMongoRepository<TEntity> : IRepository<TEntity> where TEntity 
     Task<TEntity> AddAsync(TEntity entity);
 
     /// <summary>
+    /// Creates an entity.
+    /// </summary>
+    /// <param name="entity">The entity to create.</param>
+    /// <returns>The created entity.</returns>
+    Task<TEntity> CreateAsync(TEntity entity);
+
+    /// <summary>
     /// Updates an entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>

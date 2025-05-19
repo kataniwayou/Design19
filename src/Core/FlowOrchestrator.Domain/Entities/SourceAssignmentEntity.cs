@@ -20,9 +20,24 @@ public class SourceAssignmentEntity : AbstractEntity, ISourceAssignmentEntity
     public string ImporterId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the importer type.
+    /// </summary>
+    public string ImporterType { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the assignment configuration.
     /// </summary>
     public Dictionary<string, object> Configuration { get; set; } = new Dictionary<string, object>();
+
+    /// <summary>
+    /// Gets or sets the configuration parameters.
+    /// </summary>
+    public Dictionary<string, string> ConfigurationParameters { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
+    public string Status { get; set; } = "Active";
 
     /// <summary>
     /// Gets the assignment configuration.
