@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowOrchestrator.StatisticsService", "FlowOrchestrator.StatisticsService\FlowOrchestrator.StatisticsService.csproj", "{CE083966-8A01-4698-8C56-A4D5AA8BE1BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowOrchestrator.MonitoringFramework", "FlowOrchestrator.MonitoringFramework\FlowOrchestrator.MonitoringFramework.csproj", "{FADC6C7B-9D24-455E-90F7-36A487F64079}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowOrchestrator.AlertingSystem", "FlowOrchestrator.AlertingSystem\FlowOrchestrator.AlertingSystem.csproj", "{D95E02DA-165E-4934-B828-F088168A211A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowOrchestrator.AnalyticsEngine", "FlowOrchestrator.AnalyticsEngine\FlowOrchestrator.AnalyticsEngine.csproj", "{CA41CB6A-A83D-4CC1-9D36-C44ADDA0A3A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE083966-8A01-4698-8C56-A4D5AA8BE1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE083966-8A01-4698-8C56-A4D5AA8BE1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE083966-8A01-4698-8C56-A4D5AA8BE1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE083966-8A01-4698-8C56-A4D5AA8BE1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FADC6C7B-9D24-455E-90F7-36A487F64079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FADC6C7B-9D24-455E-90F7-36A487F64079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FADC6C7B-9D24-455E-90F7-36A487F64079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FADC6C7B-9D24-455E-90F7-36A487F64079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D95E02DA-165E-4934-B828-F088168A211A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D95E02DA-165E-4934-B828-F088168A211A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D95E02DA-165E-4934-B828-F088168A211A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D95E02DA-165E-4934-B828-F088168A211A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA41CB6A-A83D-4CC1-9D36-C44ADDA0A3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA41CB6A-A83D-4CC1-9D36-C44ADDA0A3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA41CB6A-A83D-4CC1-9D36-C44ADDA0A3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA41CB6A-A83D-4CC1-9D36-C44ADDA0A3A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

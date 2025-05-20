@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-FlowOrchestrator.AlertingSystem-861a26f7-2565-46ef-affe-065cd79a2b9d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Base\FlowOrchestrator.ObservabilityBase\FlowOrchestrator.ObservabilityBase.csproj" />
+    <ProjectReference Include="..\..\Base\FlowOrchestrator.EntityManagerBase\FlowOrchestrator.EntityManagerBase.csproj" />
+  </ItemGroup>
+</Project>
