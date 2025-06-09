@@ -15,10 +15,21 @@ namespace Processor.File;
 /// </summary>
 public class FileProcessorApplication : BaseProcessorApplication
 {
+    /// <summary>
+    /// Override to add console logging for debugging
+    /// </summary>
+    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    {
+        // Add console logging for debugging
+        services.AddLogging(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Debug);
+        });
 
-
-    // Removed ConfigureServices override - logging is configured through appsettings.json
-    // This eliminates any potential interference with MassTransit consumer registration
+        // Call base implementation
+        base.ConfigureServices(services, configuration);
+    }
 
     /// <summary>
     /// Concrete implementation of the activity processing logic

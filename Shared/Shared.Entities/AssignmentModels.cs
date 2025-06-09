@@ -1,13 +1,19 @@
+using System.Text.Json.Serialization;
+
 namespace Shared.Entities;
 
 /// <summary>
 /// Base model for assignment entities
 /// </summary>
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+[JsonDerivedType(typeof(AddressAssignmentModel), "Address")]
+[JsonDerivedType(typeof(DeliveryAssignmentModel), "Delivery")]
 public abstract class AssignmentModel
 {
     /// <summary>
     /// Type of assignment (Address or Delivery)
     /// </summary>
+    [JsonPropertyOrder(-1)] // Ensure this property appears first in JSON
     public string Type { get; set; } = string.Empty;
 
     /// <summary>

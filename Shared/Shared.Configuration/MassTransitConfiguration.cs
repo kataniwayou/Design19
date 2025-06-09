@@ -47,9 +47,6 @@ public static class MassTransitConfiguration
                     TimeSpan.FromSeconds(30)
                 ));
 
-                // Configure error handling
-                // cfg.UseInMemoryOutbox(); // Commented out due to obsolete warning
-
                 // Configure endpoints to use message type routing
                 cfg.ConfigureEndpoints(context);
             });
