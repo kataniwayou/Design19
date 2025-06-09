@@ -22,15 +22,18 @@ public class FileProcessorApplication : BaseProcessorApplication
     /// </summary>
     protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        // Add console logging for debugging
+        // Call base implementation FIRST to ensure MassTransit is configured properly
+        base.ConfigureServices(services, configuration);
+
+        // Then add our custom logging (this won't interfere with MassTransit)
         services.AddLogging(builder =>
         {
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
-        // Call base implementation
-        base.ConfigureServices(services, configuration);
+        // Add logging to verify consumer registration
+        Console.WriteLine("FileProcessor ConfigureServices completed - MassTransit consumer should be registered");
     }
 
     /// <summary>

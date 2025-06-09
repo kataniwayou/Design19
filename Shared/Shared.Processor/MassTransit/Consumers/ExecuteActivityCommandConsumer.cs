@@ -25,6 +25,10 @@ public class ExecuteActivityCommandConsumer : IConsumer<ExecuteActivityCommand>
     {
         _processorService = processorService;
         _logger = logger;
+
+        // Add debug logging to verify consumer is being created
+        _logger.LogInformation("ExecuteActivityCommandConsumer created and registered successfully");
+        Console.WriteLine("✅ ExecuteActivityCommandConsumer instantiated");
     }
 
     public async Task Consume(ConsumeContext<ExecuteActivityCommand> context)
