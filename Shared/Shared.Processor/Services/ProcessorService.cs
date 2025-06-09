@@ -40,18 +40,24 @@ public class ProcessorService : IProcessorService
     private Guid? _processorId;
     private readonly object _processorIdLock = new();
 
-    // Schema health tracking
-    private bool _inputSchemaHealthy = true;
-    private bool _outputSchemaHealthy = true;
-    private bool _schemaIdsValid = true;
-    private string _inputSchemaErrorMessage = string.Empty;
-    private string _outputSchemaErrorMessage = string.Empty;
-    private string _schemaValidationErrorMessage = string.Empty;
+    // Schema health tracking - Initialize as unhealthy until validation completes
+    private bool _inputSchemaHealthy = false;
+    private bool _outputSchemaHealthy = false;
+    private bool _schemaIdsValid = false;
+    private string _inputSchemaErrorMessage = "Schema not yet validated";
+    private string _outputSchemaErrorMessage = "Schema not yet validated";
+    private string _schemaValidationErrorMessage = "Schema validation not yet performed";
     private readonly object _schemaHealthLock = new();
 
-    // Implementation hash validation tracking
-    private bool _implementationHashValid = true;
-    private string _implementationHashErrorMessage = string.Empty;
+    // Implementation hash validation tracking - Initialize as unhealthy until validation completes
+    private bool _implementationHashValid = false;
+    private string _implementationHashErrorMessage = "Implementation hash not yet validated";
+
+    // Initialization status tracking
+    private bool _isInitialized = false;
+    private bool _isInitializing = false;
+    private string _initializationErrorMessage = string.Empty;
+    private readonly object _initializationLock = new();
 
     public ProcessorService(
         IActivityExecutor activityExecutor,
@@ -104,22 +110,62 @@ public class ProcessorService : IProcessorService
     {
         using var activity = _activitySource.StartActivity("InitializeProcessor");
 
+        // Set initialization status
+        lock (_initializationLock)
+        {
+            _isInitializing = true;
+            _isInitialized = false;
+            _initializationErrorMessage = string.Empty;
+        }
+
         _logger.LogInformation(
             "Initializing processor - {ProcessorName} v{ProcessorVersion}",
             _config.Name, _config.Version);
 
-        // Get initialization configuration
-        var initConfig = _initializationConfig ?? new ProcessorInitializationConfiguration();
-
-        if (!initConfig.RetryEndlessly)
+        try
         {
-            // Legacy behavior: retry limited times then throw
-            await InitializeWithLimitedRetriesAsync(activity, cancellationToken);
-            return;
-        }
+            // Get initialization configuration
+            var initConfig = _initializationConfig ?? new ProcessorInitializationConfiguration();
 
-        // New behavior: retry endlessly until successful
-        await InitializeWithEndlessRetriesAsync(activity, cancellationToken);
+            if (!initConfig.RetryEndlessly)
+            {
+                // Legacy behavior: retry limited times then throw
+                await InitializeWithLimitedRetriesAsync(activity, cancellationToken);
+            }
+            else
+            {
+                // New behavior: retry endlessly until successful
+                await InitializeWithEndlessRetriesAsync(activity, cancellationToken);
+            }
+
+            // Mark as successfully initialized
+            lock (_initializationLock)
+            {
+                _isInitialized = true;
+                _isInitializing = false;
+                _initializationErrorMessage = string.Empty;
+            }
+
+            _logger.LogInformation(
+                "Processor initialization completed successfully - {ProcessorName} v{ProcessorVersion}",
+                _config.Name, _config.Version);
+        }
+        catch (Exception ex)
+        {
+            // Mark initialization as failed
+            lock (_initializationLock)
+            {
+                _isInitialized = false;
+                _isInitializing = false;
+                _initializationErrorMessage = ex.Message;
+            }
+
+            _logger.LogError(ex,
+                "Processor initialization failed - {ProcessorName} v{ProcessorVersion}",
+                _config.Name, _config.Version);
+
+            throw;
+        }
     }
 
     private async Task InitializeWithEndlessRetriesAsync(Activity? activity, CancellationToken cancellationToken)
@@ -516,8 +562,8 @@ public class ProcessorService : IProcessorService
         {
             _inputSchemaHealthy = inputSchemaSuccess;
             _outputSchemaHealthy = outputSchemaSuccess;
-            _inputSchemaErrorMessage = inputErrorMessage;
-            _outputSchemaErrorMessage = outputErrorMessage;
+            _inputSchemaErrorMessage = inputSchemaSuccess ? string.Empty : inputErrorMessage;
+            _outputSchemaErrorMessage = outputSchemaSuccess ? string.Empty : outputErrorMessage;
         }
 
         // Log overall schema health status
@@ -546,6 +592,7 @@ public class ProcessorService : IProcessorService
         {
             // In endless retry mode, return empty GUID if not yet initialized
             // The initialization will continue in the background
+            _logger.LogDebug("Processor ID not available yet - initialization in progress or not started");
             return Guid.Empty;
         }
 
@@ -611,7 +658,7 @@ public class ProcessorService : IProcessorService
             lock (_schemaHealthLock)
             {
                 _schemaIdsValid = allSchemasValid;
-                _schemaValidationErrorMessage = validationMessage;
+                _schemaValidationErrorMessage = allSchemasValid ? string.Empty : validationMessage;
             }
 
             if (allSchemasValid)
@@ -922,6 +969,28 @@ public class ProcessorService : IProcessorService
         {
             var healthChecks = new Dictionary<string, HealthCheckResult>();
 
+            // Check initialization status first
+            bool isInitialized, isInitializing;
+            string initializationError;
+            lock (_initializationLock)
+            {
+                isInitialized = _isInitialized;
+                isInitializing = _isInitializing;
+                initializationError = _initializationErrorMessage;
+            }
+
+            healthChecks["initialization"] = new HealthCheckResult
+            {
+                Status = isInitialized ? HealthStatus.Healthy : HealthStatus.Unhealthy,
+                Description = "Processor initialization status",
+                Data = new Dictionary<string, object>
+                {
+                    ["initialized"] = isInitialized,
+                    ["initializing"] = isInitializing,
+                    ["error_message"] = initializationError
+                }
+            };
+
             // Check cache health
             var cacheHealthy = await _cacheService.IsHealthyAsync();
             healthChecks["cache"] = new HealthCheckResult
@@ -1022,18 +1091,34 @@ public class ProcessorService : IProcessorService
                     .Select(h => h.Key)
                     .ToList();
 
-                healthMessage = $"Processor is unhealthy. Failed components: {string.Join(", ", unhealthyComponents)}";
-
-                // Add specific error details if components are unhealthy
-                var errorDetails = new List<string>();
-                if (!schemaIdsValid) errorDetails.Add($"Schema validation: {schemaValidationError}");
-                if (!inputSchemaHealthy) errorDetails.Add($"Input schema: {inputSchemaError}");
-                if (!outputSchemaHealthy) errorDetails.Add($"Output schema: {outputSchemaError}");
-                if (!implementationHashValid) errorDetails.Add($"Implementation hash: {implementationHashError}");
-
-                if (errorDetails.Any())
+                if (!isInitialized)
                 {
-                    healthMessage += $". Error details: {string.Join("; ", errorDetails)}";
+                    if (isInitializing)
+                    {
+                        healthMessage = "Processor is initializing";
+                    }
+                    else
+                    {
+                        healthMessage = string.IsNullOrEmpty(initializationError)
+                            ? "Processor not yet initialized"
+                            : $"Processor initialization failed: {initializationError}";
+                    }
+                }
+                else
+                {
+                    healthMessage = $"Processor is unhealthy. Failed components: {string.Join(", ", unhealthyComponents)}";
+
+                    // Add specific error details if components are unhealthy
+                    var errorDetails = new List<string>();
+                    if (!schemaIdsValid) errorDetails.Add($"Schema validation: {schemaValidationError}");
+                    if (!inputSchemaHealthy) errorDetails.Add($"Input schema: {inputSchemaError}");
+                    if (!outputSchemaHealthy) errorDetails.Add($"Output schema: {outputSchemaError}");
+                    if (!implementationHashValid) errorDetails.Add($"Implementation hash: {implementationHashError}");
+
+                    if (errorDetails.Any())
+                    {
+                        healthMessage += $". Error details: {string.Join("; ", errorDetails)}";
+                    }
                 }
             }
 
@@ -1207,7 +1292,7 @@ public class ProcessorService : IProcessorService
             lock (_schemaHealthLock)
             {
                 _implementationHashValid = hashesMatch;
-                _implementationHashErrorMessage = validationErrorMessage;
+                _implementationHashErrorMessage = hashesMatch ? string.Empty : validationErrorMessage;
             }
 
             if (hashesMatch)
