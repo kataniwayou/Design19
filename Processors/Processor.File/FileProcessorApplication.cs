@@ -67,11 +67,11 @@ public class FileProcessorApplication : BaseProcessorApplication
             logger.LogInformation(
                 "Processing {EntityCount} entities of types: {EntityTypes}",
                 entities.Count,
-                string.Join(", ", entities.Select(e => e.Type).Distinct()));
+                string.Join(", ", entities.Select(e => e.GetType().Name).Distinct()));
 
             // Use first entity for sample processing if available
             var firstEntity = entities.First();
-            sampleData = $"Processed entity: {firstEntity.Type} (EntityId: {firstEntity.EntityId})";
+            sampleData = $"Processed entity: {firstEntity.GetType().Name} (EntityId: {firstEntity.EntityId})";
         }
 
         // Log processing summary
@@ -96,11 +96,11 @@ public class FileProcessorApplication : BaseProcessorApplication
                     inputDataReceived = true,
                     inputMetadataReceived = inputMetadata.HasValue,
                     sampleData = sampleData,
-                    entityTypes = entities.Select(e => e.Type).Distinct().ToArray(),
+                    entityTypes = entities.Select(e => e.GetType().Name).Distinct().ToArray(),
                     entities = entities.Select(e => new
                     {
                         entityId = e.EntityId.ToString(),
-                        type = e.Type,
+                        type = e.GetType().Name,
                         assignmentType = e.GetType().Name
                     }).ToArray()
                 }

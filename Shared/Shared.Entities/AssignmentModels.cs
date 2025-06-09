@@ -11,12 +11,6 @@ namespace Shared.Entities;
 public abstract class AssignmentModel
 {
     /// <summary>
-    /// Type of assignment (Address or Delivery)
-    /// </summary>
-    [JsonPropertyOrder(-1)] // Ensure this property appears first in JSON
-    public string Type { get; set; } = string.Empty;
-
-    /// <summary>
     /// Entity ID of the assignment
     /// </summary>
     public Guid EntityId { get; set; }
@@ -31,11 +25,6 @@ public class AddressAssignmentModel : AssignmentModel
     /// Address entity data
     /// </summary>
     public AddressModel Address { get; set; } = new();
-
-    public AddressAssignmentModel()
-    {
-        Type = "Address";
-    }
 }
 
 /// <summary>
@@ -47,11 +36,6 @@ public class DeliveryAssignmentModel : AssignmentModel
     /// Delivery entity data
     /// </summary>
     public DeliveryModel Delivery { get; set; } = new();
-
-    public DeliveryAssignmentModel()
-    {
-        Type = "Delivery";
-    }
 }
 
 /// <summary>
