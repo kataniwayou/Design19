@@ -47,12 +47,30 @@ public class ExecuteActivityCommandConsumer : IConsumer<ExecuteActivityCommand>
 
         try
         {
+            // Get current processor ID for debugging
+            var currentProcessorId = await _processorService.GetProcessorIdAsync();
+
+            _logger.LogInformation(
+                "Received ExecuteActivityCommand. TargetProcessorId: {TargetProcessorId}, CurrentProcessorId: {CurrentProcessorId}, OrchestratedFlowEntityId: {OrchestratedFlowEntityId}, StepId: {StepId}, ExecutionId: {ExecutionId}",
+                command.ProcessorId, currentProcessorId, command.OrchestratedFlowEntityId, command.StepId, command.ExecutionId);
+
+            // Special handling for uninitialized processor
+            if (currentProcessorId == Guid.Empty)
+            {
+                _logger.LogWarning(
+                    "Processor not yet initialized (ProcessorId is empty). Rejecting message and requeueing. TargetProcessorId: {TargetProcessorId}, OrchestratedFlowEntityId: {OrchestratedFlowEntityId}, StepId: {StepId}, ExecutionId: {ExecutionId}",
+                    command.ProcessorId, command.OrchestratedFlowEntityId, command.StepId, command.ExecutionId);
+
+                // Throw an exception to trigger MassTransit retry mechanism
+                throw new InvalidOperationException($"Processor not yet initialized. ProcessorId is empty. Message will be retried.");
+            }
+
             // Check if this message is for this processor instance
             if (!await _processorService.IsMessageForThisProcessorAsync(command.ProcessorId))
             {
-                _logger.LogDebug(
-                    "Message not for this processor instance. ProcessorId: {ProcessorId}, OrchestratedFlowEntityId: {OrchestratedFlowEntityId}, StepId: {StepId}, ExecutionId: {ExecutionId}",
-                    command.ProcessorId, command.OrchestratedFlowEntityId, command.StepId, command.ExecutionId);
+                _logger.LogWarning(
+                    "Message not for this processor instance. TargetProcessorId: {TargetProcessorId}, CurrentProcessorId: {CurrentProcessorId}, OrchestratedFlowEntityId: {OrchestratedFlowEntityId}, StepId: {StepId}, ExecutionId: {ExecutionId}",
+                    command.ProcessorId, currentProcessorId, command.OrchestratedFlowEntityId, command.StepId, command.ExecutionId);
                 return;
             }
 
