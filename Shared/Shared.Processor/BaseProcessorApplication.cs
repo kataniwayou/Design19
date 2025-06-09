@@ -533,7 +533,8 @@ public abstract class BaseProcessorApplication : IActivityExecutor
                 services.AddHostedService<ProcessorHealthMonitor>();
 
                 // Add infrastructure services
-                services.AddMassTransitWithRabbitMq(context.Configuration);
+                services.AddMassTransitWithRabbitMq(context.Configuration,
+                    typeof(Shared.Processor.MassTransit.Consumers.ExecuteActivityCommandConsumer));
                 services.AddHazelcastClient(context.Configuration);
                 services.AddOpenTelemetryObservability(context.Configuration);
 
