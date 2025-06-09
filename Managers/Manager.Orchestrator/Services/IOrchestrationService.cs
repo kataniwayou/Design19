@@ -29,6 +29,20 @@ public interface IOrchestrationService
     /// <param name="orchestratedFlowId">The orchestrated flow ID to check</param>
     /// <returns>Orchestration status information</returns>
     Task<OrchestrationStatusModel> GetOrchestrationStatusAsync(Guid orchestratedFlowId);
+
+    /// <summary>
+    /// Gets health status for a specific processor
+    /// </summary>
+    /// <param name="processorId">The processor ID to check</param>
+    /// <returns>Processor health status or null if not found</returns>
+    Task<ProcessorHealthResponse?> GetProcessorHealthAsync(Guid processorId);
+
+    /// <summary>
+    /// Gets health status for all processors in a specific orchestrated flow
+    /// </summary>
+    /// <param name="orchestratedFlowId">The orchestrated flow ID to check</param>
+    /// <returns>Dictionary of processor health statuses or null if orchestrated flow not found in cache</returns>
+    Task<ProcessorsHealthResponse?> GetProcessorsHealthByOrchestratedFlowAsync(Guid orchestratedFlowId);
 }
 
 /// <summary>

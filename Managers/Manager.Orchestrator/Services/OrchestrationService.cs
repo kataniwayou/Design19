@@ -2,10 +2,12 @@ using Manager.Orchestrator.Models;
 using Microsoft.Extensions.Logging;
 using Shared.Processor.Models;
 using Shared.Processor.MassTransit.Commands;
+using Shared.Processor.Extensions;
 using Shared.Services;
 using Shared.Entities;
 using MassTransit;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace Manager.Orchestrator.Services;
 
@@ -308,6 +310,183 @@ public class OrchestrationService : IOrchestrationService
         }
 
         _logger.LogInformation("All {ProcessorCount} processors are healthy", processorIds.Count);
+    }
+
+    public async Task<ProcessorHealthResponse?> GetProcessorHealthAsync(Guid processorId)
+    {
+        using var activity = ActivitySource.StartActivity("GetProcessorHealth");
+        activity?.SetTag("processor.id", processorId.ToString());
+
+        _logger.LogDebug("Getting health status for processor {ProcessorId}", processorId);
+
+        try
+        {
+            // Get processor health from cache using the same map name as ProcessorHealthMonitor
+            var healthData = await _rawCacheService.GetAsync("processor-health", processorId.ToString());
+
+            if (string.IsNullOrEmpty(healthData))
+            {
+                _logger.LogDebug("No health data found for processor {ProcessorId}", processorId);
+                return null;
+            }
+
+            var healthEntry = JsonSerializer.Deserialize<ProcessorHealthCacheEntry>(healthData);
+            if (healthEntry == null)
+            {
+                _logger.LogWarning("Failed to deserialize health data for processor {ProcessorId}", processorId);
+                return null;
+            }
+
+            // Check if health data is expired
+            if (healthEntry.IsExpired)
+            {
+                _logger.LogDebug("Health data for processor {ProcessorId} is expired. ExpiresAt: {ExpiresAt}",
+                    processorId, healthEntry.ExpiresAt);
+                return null;
+            }
+
+            var response = new ProcessorHealthResponse
+            {
+                ProcessorId = healthEntry.ProcessorId,
+                Status = healthEntry.Status,
+                Message = healthEntry.Message,
+                LastUpdated = healthEntry.LastUpdated,
+                ExpiresAt = healthEntry.ExpiresAt,
+                ReportingPodId = healthEntry.ReportingPodId,
+                Uptime = healthEntry.Uptime,
+                Metadata = healthEntry.Metadata,
+                PerformanceMetrics = healthEntry.PerformanceMetrics,
+                HealthChecks = healthEntry.HealthChecks,
+                RetrievedAt = DateTime.UtcNow
+            };
+
+            _logger.LogDebug("Successfully retrieved health status for processor {ProcessorId}. Status: {Status}, LastUpdated: {LastUpdated}",
+                processorId, healthEntry.Status, healthEntry.LastUpdated);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            activity?.SetErrorTags(ex);
+            _logger.LogError(ex, "Error getting health status for processor {ProcessorId}", processorId);
+            throw;
+        }
+    }
+
+    public async Task<ProcessorsHealthResponse?> GetProcessorsHealthByOrchestratedFlowAsync(Guid orchestratedFlowId)
+    {
+        using var activity = ActivitySource.StartActivity("GetProcessorsHealthByOrchestratedFlow");
+        activity?.SetTag("orchestrated_flow.id", orchestratedFlowId.ToString());
+
+        _logger.LogDebug("Getting processors health for orchestrated flow {OrchestratedFlowId}", orchestratedFlowId);
+
+        try
+        {
+            // Get orchestration data from cache to retrieve processor IDs
+            var orchestrationData = await _cacheService.GetOrchestrationDataAsync(orchestratedFlowId);
+
+            if (orchestrationData == null)
+            {
+                _logger.LogDebug("Orchestrated flow {OrchestratedFlowId} not found in cache", orchestratedFlowId);
+                return null;
+            }
+
+            if (orchestrationData.IsExpired)
+            {
+                _logger.LogDebug("Orchestration data for {OrchestratedFlowId} is expired. ExpiresAt: {ExpiresAt}",
+                    orchestratedFlowId, orchestrationData.ExpiresAt);
+                return null;
+            }
+
+            var processorIds = orchestrationData.StepManager.ProcessorIds;
+            _logger.LogDebug("Found {ProcessorCount} processors for orchestrated flow {OrchestratedFlowId}",
+                processorIds.Count, orchestratedFlowId);
+
+            var processorsHealth = new Dictionary<Guid, ProcessorHealthResponse>();
+            var summary = new ProcessorsHealthSummary
+            {
+                TotalProcessors = processorIds.Count
+            };
+
+            // Get health status for each processor
+            foreach (var processorId in processorIds)
+            {
+                try
+                {
+                    var healthResponse = await GetProcessorHealthAsync(processorId);
+
+                    if (healthResponse != null)
+                    {
+                        processorsHealth[processorId] = healthResponse;
+
+                        // Update summary counts
+                        switch (healthResponse.Status)
+                        {
+                            case HealthStatus.Healthy:
+                                summary.HealthyProcessors++;
+                                break;
+                            case HealthStatus.Degraded:
+                                summary.DegradedProcessors++;
+                                summary.ProblematicProcessors.Add(processorId);
+                                break;
+                            case HealthStatus.Unhealthy:
+                                summary.UnhealthyProcessors++;
+                                summary.ProblematicProcessors.Add(processorId);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        summary.NoHealthDataProcessors++;
+                        summary.ProblematicProcessors.Add(processorId);
+                        _logger.LogWarning("No health data found for processor {ProcessorId} in orchestrated flow {OrchestratedFlowId}",
+                            processorId, orchestratedFlowId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    summary.NoHealthDataProcessors++;
+                    summary.ProblematicProcessors.Add(processorId);
+                    _logger.LogError(ex, "Error getting health for processor {ProcessorId} in orchestrated flow {OrchestratedFlowId}",
+                        processorId, orchestratedFlowId);
+                }
+            }
+
+            // Determine overall status
+            if (summary.UnhealthyProcessors > 0 || summary.NoHealthDataProcessors > 0)
+            {
+                summary.OverallStatus = HealthStatus.Unhealthy;
+            }
+            else if (summary.DegradedProcessors > 0)
+            {
+                summary.OverallStatus = HealthStatus.Degraded;
+            }
+            else
+            {
+                summary.OverallStatus = HealthStatus.Healthy;
+            }
+
+            var response = new ProcessorsHealthResponse
+            {
+                OrchestratedFlowId = orchestratedFlowId,
+                Processors = processorsHealth,
+                Summary = summary,
+                RetrievedAt = DateTime.UtcNow
+            };
+
+            _logger.LogInformation("Successfully retrieved health status for {ProcessorCount} processors in orchestrated flow {OrchestratedFlowId}. " +
+                                 "Healthy: {HealthyCount}, Degraded: {DegradedCount}, Unhealthy: {UnhealthyCount}, NoData: {NoDataCount}, Overall: {OverallStatus}",
+                processorIds.Count, orchestratedFlowId, summary.HealthyProcessors, summary.DegradedProcessors,
+                summary.UnhealthyProcessors, summary.NoHealthDataProcessors, summary.OverallStatus);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            activity?.SetErrorTags(ex);
+            _logger.LogError(ex, "Error getting processors health for orchestrated flow {OrchestratedFlowId}", orchestratedFlowId);
+            throw;
+        }
     }
 
     /// <summary>

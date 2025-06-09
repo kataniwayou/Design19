@@ -1,3 +1,4 @@
+using Manager.Orchestrator.Models;
 using Manager.Orchestrator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -159,6 +160,108 @@ public class OrchestrationController : ControllerBase
             _logger.LogError(ex, "Error during Get orchestration status. OrchestratedFlowId: {OrchestratedFlowId}, User: {User}, RequestId: {RequestId}",
                 guidOrchestratedFlowId, userContext, HttpContext.TraceIdentifier);
             return StatusCode(500, "An error occurred while retrieving orchestration status");
+        }
+    }
+
+    /// <summary>
+    /// Gets health status for a specific processor
+    /// </summary>
+    /// <param name="processorId">The processor ID to check</param>
+    /// <returns>Processor health status</returns>
+    [HttpGet("processor-health/{processorId}")]
+    [SwaggerOperation(Summary = "Get processor health", Description = "Gets the health status of a specific processor from cache")]
+    [SwaggerResponse(200, "Processor health retrieved successfully", typeof(ProcessorHealthResponse))]
+    [SwaggerResponse(400, "Invalid processor ID")]
+    [SwaggerResponse(404, "Processor health data not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    public async Task<ActionResult<ProcessorHealthResponse>> GetProcessorHealth(string processorId)
+    {
+        var userContext = User.Identity?.Name ?? "Anonymous";
+
+        // Validate GUID format
+        if (!Guid.TryParse(processorId, out Guid guidProcessorId))
+        {
+            _logger.LogWarning("Invalid GUID format provided for Get processor health. ProcessorId: {ProcessorId}, User: {User}, RequestId: {RequestId}",
+                processorId, userContext, HttpContext.TraceIdentifier);
+            return BadRequest($"Invalid GUID format: {processorId}");
+        }
+
+        _logger.LogInformation("Starting Get processor health request. ProcessorId: {ProcessorId}, User: {User}, RequestId: {RequestId}",
+            guidProcessorId, userContext, HttpContext.TraceIdentifier);
+
+        try
+        {
+            var healthResponse = await _orchestrationService.GetProcessorHealthAsync(guidProcessorId);
+
+            if (healthResponse == null)
+            {
+                _logger.LogInformation("Processor health data not found. ProcessorId: {ProcessorId}, User: {User}, RequestId: {RequestId}",
+                    guidProcessorId, userContext, HttpContext.TraceIdentifier);
+                return NotFound($"Processor health data not found for processor ID: {guidProcessorId}");
+            }
+
+            _logger.LogInformation("Successfully retrieved processor health. ProcessorId: {ProcessorId}, Status: {Status}, User: {User}, RequestId: {RequestId}",
+                guidProcessorId, healthResponse.Status, userContext, HttpContext.TraceIdentifier);
+
+            return Ok(healthResponse);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during Get processor health. ProcessorId: {ProcessorId}, User: {User}, RequestId: {RequestId}",
+                guidProcessorId, userContext, HttpContext.TraceIdentifier);
+            return StatusCode(500, "An error occurred while retrieving processor health");
+        }
+    }
+
+    /// <summary>
+    /// Gets health status for all processors in a specific orchestrated flow
+    /// </summary>
+    /// <param name="orchestratedFlowId">The orchestrated flow ID to check</param>
+    /// <returns>Health status of all processors in the orchestrated flow</returns>
+    [HttpGet("processors-health/{orchestratedFlowId}")]
+    [SwaggerOperation(Summary = "Get processors health by orchestrated flow", Description = "Gets the health status of all processors in a specific orchestrated flow (only available if orchestrated flow exists in cache)")]
+    [SwaggerResponse(200, "Processors health retrieved successfully", typeof(ProcessorsHealthResponse))]
+    [SwaggerResponse(400, "Invalid orchestrated flow ID")]
+    [SwaggerResponse(404, "Orchestrated flow not found in cache")]
+    [SwaggerResponse(500, "Internal server error")]
+    public async Task<ActionResult<ProcessorsHealthResponse>> GetProcessorsHealthByOrchestratedFlow(string orchestratedFlowId)
+    {
+        var userContext = User.Identity?.Name ?? "Anonymous";
+
+        // Validate GUID format
+        if (!Guid.TryParse(orchestratedFlowId, out Guid guidOrchestratedFlowId))
+        {
+            _logger.LogWarning("Invalid GUID format provided for Get processors health by orchestrated flow. OrchestratedFlowId: {OrchestratedFlowId}, User: {User}, RequestId: {RequestId}",
+                orchestratedFlowId, userContext, HttpContext.TraceIdentifier);
+            return BadRequest($"Invalid GUID format: {orchestratedFlowId}");
+        }
+
+        _logger.LogInformation("Starting Get processors health by orchestrated flow request. OrchestratedFlowId: {OrchestratedFlowId}, User: {User}, RequestId: {RequestId}",
+            guidOrchestratedFlowId, userContext, HttpContext.TraceIdentifier);
+
+        try
+        {
+            var healthResponse = await _orchestrationService.GetProcessorsHealthByOrchestratedFlowAsync(guidOrchestratedFlowId);
+
+            if (healthResponse == null)
+            {
+                _logger.LogInformation("Orchestrated flow not found in cache. OrchestratedFlowId: {OrchestratedFlowId}, User: {User}, RequestId: {RequestId}",
+                    guidOrchestratedFlowId, userContext, HttpContext.TraceIdentifier);
+                return NotFound($"Orchestrated flow not found in cache: {guidOrchestratedFlowId}");
+            }
+
+            _logger.LogInformation("Successfully retrieved processors health for orchestrated flow. OrchestratedFlowId: {OrchestratedFlowId}, " +
+                                 "TotalProcessors: {TotalProcessors}, HealthyProcessors: {HealthyProcessors}, OverallStatus: {OverallStatus}, User: {User}, RequestId: {RequestId}",
+                guidOrchestratedFlowId, healthResponse.Summary.TotalProcessors, healthResponse.Summary.HealthyProcessors,
+                healthResponse.Summary.OverallStatus, userContext, HttpContext.TraceIdentifier);
+
+            return Ok(healthResponse);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during Get processors health by orchestrated flow. OrchestratedFlowId: {OrchestratedFlowId}, User: {User}, RequestId: {RequestId}",
+                guidOrchestratedFlowId, userContext, HttpContext.TraceIdentifier);
+            return StatusCode(500, "An error occurred while retrieving processors health");
         }
     }
 }
