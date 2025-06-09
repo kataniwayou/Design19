@@ -17,24 +17,8 @@ public class FileProcessorApplication : BaseProcessorApplication
 {
 
 
-    /// <summary>
-    /// Override to add console logging for debugging
-    /// </summary>
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-    {
-        // Call base implementation FIRST to ensure MassTransit is configured properly
-        base.ConfigureServices(services, configuration);
-
-        // Then add our custom logging (this won't interfere with MassTransit)
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Debug);
-        });
-
-        // Add logging to verify consumer registration
-        Console.WriteLine("FileProcessor ConfigureServices completed - MassTransit consumer should be registered");
-    }
+    // Removed ConfigureServices override - logging is configured through appsettings.json
+    // This eliminates any potential interference with MassTransit consumer registration
 
     /// <summary>
     /// Concrete implementation of the activity processing logic
