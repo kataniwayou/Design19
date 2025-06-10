@@ -1,9 +1,12 @@
 using Shared.Models;
 using Shared.Processor.Application;
+using Shared.Processor.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
+using Shared.Configuration;
 
 namespace Processor.File;
 
@@ -14,25 +17,13 @@ namespace Processor.File;
 /// </summary>
 public class FileProcessorApplication : BaseProcessorApplication
 {
-    /// <summary>
-    /// Override to add console logging for debugging
-    /// </summary>
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-    {
-        // Add console logging for debugging
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Debug);
-        });
-
-        // Call base implementation
-        base.ConfigureServices(services, configuration);
-    }
+    // Removed ConfigureServices override - logging is configured through appsettings.json
+    // This eliminates any potential interference with MassTransit consumer registration
 
     /// <summary>
     /// Concrete implementation of the activity processing logic
     /// This is where the specific processor business logic is implemented
+    /// Handles input parsing and validation internally
     /// </summary>
     protected override async Task<ProcessedActivityData> ProcessActivityDataAsync(
         Guid processorId,
@@ -40,8 +31,7 @@ public class FileProcessorApplication : BaseProcessorApplication
         Guid stepId,
         Guid executionId,
         List<AssignmentModel> entities,
-        JsonElement inputData,
-        JsonElement? inputMetadata,
+        string inputData,
         Guid correlationId ,
         CancellationToken cancellationToken = default)
     {
@@ -49,18 +39,52 @@ public class FileProcessorApplication : BaseProcessorApplication
         // Get logger from service provider
         var logger = ServiceProvider.GetRequiredService<ILogger<FileProcessorApplication>>();
 
+        logger.LogInformation(
+            "Processing activity. ProcessorId: {ProcessorId}, StepId: {StepId}, ExecutionId: {ExecutionId}, EntitiesCount: {EntitiesCount}",
+            processorId, stepId, executionId, entities.Count);
+
+        // 1. Parse input data (concrete processor responsibility)
+        JsonElement inputDataElement;
+        JsonElement? inputMetadata = null;
+
+        try
+        {
+            if (string.IsNullOrEmpty(inputData))
+            {
+                // Create default empty structures for empty input
+                var emptyJson = "{\"data\":{},\"metadata\":{}}";
+                var inputObject = JsonSerializer.Deserialize<JsonElement>(emptyJson);
+                inputDataElement = inputObject.GetProperty("data");
+            }
+            else
+            {
+                // Parse input data for normal case
+                var inputObject = JsonSerializer.Deserialize<JsonElement>(inputData);
+                inputDataElement = inputObject.TryGetProperty("message", out var messageElement) ? messageElement : inputObject;
+                inputMetadata = inputObject.TryGetProperty("metadata", out var metadataElement) ? metadataElement : null;
+            }
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse input data: {ex.Message}");
+        }
+
+        // 2. Validate input data against InputSchema (concrete processor responsibility)
+        if (!await ValidateInputDataAsync(inputData))
+        {
+            throw new InvalidOperationException("Input data validation failed against InputSchema");
+        }
+
         // Simulate some processing time
         await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
 
-        // Process the data (simplified from original implementation)
+        // Log input data details
         logger.LogInformation(
-            "Sample processor processing data. ProcessorId: {ProcessorId}, StepId: {StepId}",
-            processorId, stepId);
-
-        // Initialize sample data for processing
-        var sampleData = "This is sample data from the file processor";
+            "Input data type: {InputDataType}, Has metadata: {HasMetadata}",
+            inputDataElement.ValueKind, inputMetadata.HasValue);
 
         // Process entities generically without specific type handling
+        string sampleData = "No entities to process";
         if (entities.Any())
         {
             logger.LogInformation(
@@ -92,7 +116,7 @@ public class FileProcessorApplication : BaseProcessorApplication
                 {
                     processedAt = DateTime.UtcNow,
                     processingDuration = "100ms",
-                    inputDataReceived = true,
+                    inputDataReceived = !string.IsNullOrEmpty(inputData),
                     inputMetadataReceived = inputMetadata.HasValue,
                     sampleData = sampleData,
                     entityTypes = entities.Select(e => e.GetType().Name).Distinct().ToArray(),
@@ -108,5 +132,31 @@ public class FileProcessorApplication : BaseProcessorApplication
             Version = "3.0",
             ExecutionId = executionId == Guid.Empty ? Guid.NewGuid() : executionId
         };
+    }
+
+    /// <summary>
+    /// Validates input data against the input schema
+    /// </summary>
+    /// <param name="inputData">Raw input data string to validate</param>
+    /// <returns>True if validation passes, false otherwise</returns>
+    private async Task<bool> ValidateInputDataAsync(string inputData)
+    {
+        try
+        {
+            var processorService = ServiceProvider.GetService<IProcessorService>();
+            if (processorService == null)
+            {
+                // No processor service available - skip validation
+                return true;
+            }
+
+            return await processorService.ValidateInputDataAsync(inputData);
+        }
+        catch (Exception ex)
+        {
+            var logger = ServiceProvider.GetRequiredService<ILogger<FileProcessorApplication>>();
+            logger.LogError(ex, "Input schema validation failed with exception");
+            return false;
+        }
     }
 }

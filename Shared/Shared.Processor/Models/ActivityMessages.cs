@@ -147,6 +147,47 @@ public class ProcessorStatisticsMessage
 }
 
 /// <summary>
+/// Result returned from ExecuteActivityAsync containing all ProcessedActivityData info plus serialized data
+/// </summary>
+public class ActivityExecutionResult
+{
+    /// <summary>
+    /// Result message from processing
+    /// </summary>
+    public string Result { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Status of the processing
+    /// </summary>
+    public string Status { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Duration of the processing
+    /// </summary>
+    public TimeSpan Duration { get; set; }
+
+    /// <summary>
+    /// Name of the processor that handled this activity
+    /// </summary>
+    public string ProcessorName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Version of the processor
+    /// </summary>
+    public string Version { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Execution ID
+    /// </summary>
+    public Guid ExecutionId { get; set; }
+
+    /// <summary>
+    /// JSON serialized string of the Data property only
+    /// </summary>
+    public string SerializedData { get; set; } = string.Empty;
+}
+
+/// <summary>
 /// Status of activity execution
 /// </summary>
 public enum ActivityExecutionStatus

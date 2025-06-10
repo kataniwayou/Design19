@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Text.Json;
 using Shared.Models;
 
@@ -27,9 +28,60 @@ public abstract class BaseProcessorApplication : IActivityExecutor
     protected IServiceProvider ServiceProvider => _host?.Services ?? throw new InvalidOperationException("Host not initialized");
 
     /// <summary>
-    /// Main implementation of activity execution that handles common patterns
+    /// Implementation of IActivityExecutor interface - maintains backward compatibility
     /// </summary>
     public virtual async Task<string> ExecuteActivityAsync(
+        Guid processorId,
+        Guid orchestratedFlowEntityId,
+        Guid stepId,
+        Guid executionId,
+        List<AssignmentModel> entities,
+        string inputData,
+        Guid correlationId = default,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await ExecuteActivityInternalAsync(
+            processorId,
+            orchestratedFlowEntityId,
+            stepId,
+            executionId,
+            entities,
+            inputData,
+            correlationId,
+            cancellationToken);
+
+        // Create standard result structure for backward compatibility
+        var legacyResult = new
+        {
+            result = result.Result,
+            timestamp = DateTime.UtcNow.ToString("O"),
+            stepId = stepId.ToString(),
+            executionId = result.ExecutionId.ToString(),
+            correlationId = correlationId,
+            status = result.Status,
+            data = JsonSerializer.Deserialize<object>(result.SerializedData),
+            metadata = new
+            {
+                processor = result.ProcessorName,
+                version = result.Version,
+                environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development",
+                machineName = Environment.MachineName,
+                duration = result.Duration.ToString()
+            }
+        };
+
+        return JsonSerializer.Serialize(legacyResult, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        });
+    }
+
+    /// <summary>
+    /// Main implementation of activity execution that handles common patterns
+    /// Returns structured result with all metadata and serialized data
+    /// </summary>
+    public virtual async Task<ActivityExecutionResult> ExecuteActivityInternalAsync(
         Guid processorId,
         Guid orchestratedFlowEntityId,
         Guid stepId,
@@ -39,89 +91,81 @@ public abstract class BaseProcessorApplication : IActivityExecutor
         Guid correlationId ,
         CancellationToken cancellationToken = default)
     {
+        var stopwatch = Stopwatch.StartNew();
         var logger = ServiceProvider.GetRequiredService<ILogger<BaseProcessorApplication>>();
 
-        // Simulate some processing time
-        await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
-        // Parse and validate input data
-        JsonElement inputObject;
-        JsonElement inputDataObj;
-        JsonElement? inputMetadata = null;
-
-        if (string.IsNullOrEmpty(inputData))
+        try
         {
-            // Create default empty structures for empty input
-            var emptyJson = "{\"data\":{},\"metadata\":{}}";
-            inputObject = JsonSerializer.Deserialize<JsonElement>(emptyJson);
-            inputDataObj = inputObject.GetProperty("data");
-        }
-        else
-        {
-            // Parse input data for normal case
-            inputObject = JsonSerializer.Deserialize<JsonElement>(inputData);
-            var message = inputObject.GetProperty("message").GetString();
-            inputDataObj = inputObject.GetProperty("message"); 
-            inputMetadata = inputObject.TryGetProperty("metadata", out var metadataElement) ? metadataElement : null;
-        }
+            // Simulate some processing time
+            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
 
-        logger.LogInformation(
-            "Processing input data with {EntitiesInInput} entities from input data, {EntitiesInMessage} entities from message",
-            inputDataObj.TryGetProperty("entities", out var entitiesElement) ? entitiesElement.GetArrayLength() : 0,
-            entities.Count);
+            // Call the concrete processor (handles parsing and input validation internally)
+            var processedData = await ProcessActivityDataAsync(
+                processorId,
+                orchestratedFlowEntityId,
+                stepId,
+                executionId,
+                entities,
+                inputData, // Raw input data - concrete processor parses and validates
+                correlationId,
+                cancellationToken);
 
-        // Call the abstract method that derived classes must implement
-        var processedData = await ProcessActivityDataAsync(
-            processorId,
-            orchestratedFlowEntityId,
-            stepId,
-            executionId,
-            entities,
-            inputDataObj,
-            inputMetadata,
-            correlationId,
-            cancellationToken);
+            stopwatch.Stop();
 
-        // Set the executionId of the processed data
-        executionId = processedData.ExecutionId;
-
-        // Create standard result structure
-        var result = new
-        {
-            result = processedData.Result ?? "Processing completed successfully",
-            timestamp = DateTime.UtcNow.ToString("O"),
-            stepId = stepId.ToString(),
-            executionId = executionId.ToString(),
-            correlationId = correlationId,
-            status = processedData.Status ?? "completed",
-            data = processedData.Data ?? new { },
-            metadata = new
+            // Serialize only the Data property to JSON
+            var serializedData = JsonSerializer.Serialize(processedData.Data, new JsonSerializerOptions
             {
-                processor = processedData.ProcessorName ?? GetType().Name,
-                version = processedData.Version ?? "1.0",
-                environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development",
-                machineName = Environment.MachineName
-            }
-        };
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            });
 
-        return JsonSerializer.Serialize(result, new JsonSerializerOptions
+            // Validate output data against OutputSchema (Data property only)
+            if (!await ValidateOutputDataAsync(serializedData))
+            {
+                throw new InvalidOperationException("Output data validation failed against OutputSchema");
+            }
+
+            // Return new structure with all info + serialized data
+            return new ActivityExecutionResult
+            {
+                Result = processedData.Result ?? "Processing completed successfully",
+                Status = processedData.Status ?? "completed",
+                Duration = stopwatch.Elapsed,
+                ProcessorName = processedData.ProcessorName ?? GetType().Name,
+                Version = processedData.Version ?? "1.0",
+                ExecutionId = processedData.ExecutionId == Guid.Empty ? executionId : processedData.ExecutionId,
+                SerializedData = serializedData
+            };
+        }
+        catch (Exception ex)
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        });
+            stopwatch.Stop();
+            logger.LogError(ex, "Activity execution failed");
+
+            return new ActivityExecutionResult
+            {
+                Result = $"Processing failed: {ex.Message}",
+                Status = "failed",
+                Duration = stopwatch.Elapsed,
+                ProcessorName = GetType().Name,
+                Version = "1.0",
+                ExecutionId = executionId,
+                SerializedData = "{}" // Empty JSON object for failed processing
+            };
+        }
     }
 
     /// <summary>
     /// Abstract method that concrete processor implementations must override
     /// This is where the specific processor business logic should be implemented
+    /// Concrete processors must handle input parsing and validation internally
     /// </summary>
     /// <param name="processorId">ID of the processor executing the activity</param>
     /// <param name="orchestratedFlowEntityId">ID of the orchestrated flow entity</param>
     /// <param name="stepId">ID of the step being executed</param>
     /// <param name="executionId">Unique execution ID for this activity instance</param>
     /// <param name="entities">Collection of base entities to process</param>
-    /// <param name="inputData">Parsed input data object</param>
-    /// <param name="inputMetadata">Optional metadata from input</param>
+    /// <param name="inputData">Raw input data string - concrete processor must parse and validate</param>
     /// <param name="correlationId">Optional correlation ID for tracking</param>
     /// <param name="cancellationToken">Cancellation token for the operation</param>
     /// <returns>Processed data that will be incorporated into the standard result structure</returns>
@@ -131,8 +175,7 @@ public abstract class BaseProcessorApplication : IActivityExecutor
         Guid stepId,
         Guid executionId,
         List<AssignmentModel> entities,
-        JsonElement inputData,
-        JsonElement? inputMetadata,
+        string inputData,
         Guid correlationId ,
         CancellationToken cancellationToken = default);
 
@@ -147,6 +190,32 @@ public abstract class BaseProcessorApplication : IActivityExecutor
         public string? ProcessorName { get; set; }
         public string? Version { get; set; }
         public Guid ExecutionId { get; set; }
+    }
+
+    /// <summary>
+    /// Validates output data against the output schema (Data property only)
+    /// </summary>
+    /// <param name="dataJson">JSON string of the data to validate</param>
+    /// <returns>True if validation passes, false otherwise</returns>
+    private async Task<bool> ValidateOutputDataAsync(string dataJson)
+    {
+        try
+        {
+            var processorService = ServiceProvider.GetService<IProcessorService>();
+            if (processorService == null)
+            {
+                // No processor service available - skip validation
+                return true;
+            }
+
+            return await processorService.ValidateOutputDataAsync(dataJson);
+        }
+        catch (Exception ex)
+        {
+            var logger = ServiceProvider.GetRequiredService<ILogger<BaseProcessorApplication>>();
+            logger.LogError(ex, "Output schema validation failed with exception");
+            return false;
+        }
     }
 
     /// <summary>
