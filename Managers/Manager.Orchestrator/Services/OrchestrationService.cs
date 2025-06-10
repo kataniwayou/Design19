@@ -4,7 +4,7 @@ using Shared.Processor.Models;
 using Shared.Processor.MassTransit.Commands;
 using Shared.Processor.Extensions;
 using Shared.Services;
-using Shared.Entities;
+using Shared.Models;
 using MassTransit;
 using System.Diagnostics;
 using System.Text.Json;

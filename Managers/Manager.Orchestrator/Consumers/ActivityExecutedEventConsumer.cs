@@ -2,7 +2,7 @@ using Manager.Orchestrator.Models;
 using Manager.Orchestrator.Services;
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Shared.Entities;
+using Shared.Models;
 using Shared.Processor.MassTransit.Commands;
 using Shared.Processor.MassTransit.Events;
 using Shared.Services;

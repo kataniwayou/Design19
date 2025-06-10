@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
+using Shared.Models;
 using Shared.Entities;
 
 namespace Manager.Orchestrator.Services;

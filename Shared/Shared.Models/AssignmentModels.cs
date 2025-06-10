@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Shared.Entities;
+namespace Shared.Models;
 
 /// <summary>
 /// Base model for assignment entities

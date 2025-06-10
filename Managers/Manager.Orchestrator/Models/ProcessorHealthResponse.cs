@@ -1,4 +1,4 @@
-using Shared.Processor.Models;
+using Shared.Models;
 using System.Text.Json.Serialization;
 
 namespace Manager.Orchestrator.Models;

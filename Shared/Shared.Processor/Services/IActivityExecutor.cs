@@ -1,5 +1,4 @@
-using Shared.Entities;
-using Shared.Entities.Base;
+using Shared.Models;
 
 namespace Shared.Processor.Services;
 

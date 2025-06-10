@@ -1,17 +1,16 @@
-using Shared.Processor.Constants;
-using Shared.Processor.Extensions;
-using Shared.Processor.Models;
-using Shared.MassTransit.Commands;
-using Shared.Services;
-using Shared.Entities;
-using MassTransit;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Schema;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Text.Json;
-using System.Linq;
+using MassTransit;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Shared.Entities;
+using Shared.MassTransit.Commands;
+using Shared.Models;
+using Shared.Processor.Constants;
+using Shared.Processor.Extensions;
+using Shared.Processor.Models;
+using Shared.Services;
 
 namespace Shared.Processor.Services;
 

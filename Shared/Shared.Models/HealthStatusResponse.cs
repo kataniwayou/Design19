@@ -1,4 +1,4 @@
-namespace Shared.Processor.Models;
+namespace Shared.Models;
 
 /// <summary>
 /// Health status response for processor

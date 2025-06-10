@@ -1,5 +1,5 @@
+using Shared.Models;
 using Shared.Processor.Models;
-
 namespace Shared.Processor.Services;
 
 /// <summary>

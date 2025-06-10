@@ -1,6 +1,6 @@
 using Shared.Entities;
 
-namespace Manager.Orchestrator.Models;
+namespace Shared.Models;
 
 /// <summary>
 /// Model containing all step-related data retrieved from Step Manager

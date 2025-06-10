@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Shared.Processor.Models;
+namespace Shared.Models;
 
 /// <summary>
 /// Represents a processor health entry stored in the distributed cache.

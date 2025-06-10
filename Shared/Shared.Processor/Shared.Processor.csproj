@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared.Entities\Shared.Entities.csproj" />
+    <ProjectReference Include="..\Shared.Models\Shared.Models.csproj" />
     <ProjectReference Include="..\Shared.Services\Shared.Services.csproj" />
     <ProjectReference Include="..\Shared.Configuration\Shared.Configuration.csproj" />
     <ProjectReference Include="..\Shared.MassTransit\Shared.MassTransit.csproj" />

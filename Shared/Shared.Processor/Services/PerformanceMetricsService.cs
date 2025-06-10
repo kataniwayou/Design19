@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Shared.Processor.Models;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using Shared.Models;
 
 namespace Shared.Processor.Services;
 

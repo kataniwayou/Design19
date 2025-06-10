@@ -1,4 +1,4 @@
-using Manager.Orchestrator.Models;
+using Shared.Models;
 using Shared.Entities;
 
 namespace Manager.Orchestrator.Services;

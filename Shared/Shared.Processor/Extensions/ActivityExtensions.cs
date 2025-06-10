@@ -1,6 +1,7 @@
 using Shared.Processor.Constants;
 using Shared.Processor.Models;
 using System.Diagnostics;
+using Shared.Models;
 
 namespace Shared.Processor.Extensions;
 

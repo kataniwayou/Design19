@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using Shared.Entities;
+using Shared.Models;
 
 namespace Shared.Processor.Application;
 
@@ -60,7 +60,8 @@ public abstract class BaseProcessorApplication : IActivityExecutor
         {
             // Parse input data for normal case
             inputObject = JsonSerializer.Deserialize<JsonElement>(inputData);
-            inputDataObj = inputObject.GetProperty("data");
+            var message = inputObject.GetProperty("message").GetString();
+            inputDataObj = inputObject.GetProperty("message"); 
             inputMetadata = inputObject.TryGetProperty("metadata", out var metadataElement) ? metadataElement : null;
         }
 

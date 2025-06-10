@@ -1,4 +1,4 @@
-using Shared.Processor.Models;
+using Shared.Models;
 
 namespace Shared.Processor.Services;
 

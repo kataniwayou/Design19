@@ -1,5 +1,5 @@
 namespace Shared.Processor.Services;
-
+using Shared.Models;
 /// <summary>
 /// Interface for the processor health monitoring service
 /// </summary>
@@ -30,13 +30,13 @@ public interface IProcessorHealthMonitor
     /// </summary>
     /// <param name="processorId">ID of the processor to check</param>
     /// <returns>Health cache entry or null if not found</returns>
-    Task<Models.ProcessorHealthCacheEntry?> GetHealthStatusFromCacheAsync(Guid processorId);
+    Task<ProcessorHealthCacheEntry?> GetHealthStatusFromCacheAsync(Guid processorId);
 
     /// <summary>
     /// Gets health status for all processors from cache
     /// </summary>
     /// <returns>Dictionary of processor health entries</returns>
-    Task<Dictionary<Guid, Models.ProcessorHealthCacheEntry>> GetAllHealthStatusFromCacheAsync();
+    Task<Dictionary<Guid, ProcessorHealthCacheEntry>> GetAllHealthStatusFromCacheAsync();
 
     /// <summary>
     /// Gets statistics about the health monitoring system itself

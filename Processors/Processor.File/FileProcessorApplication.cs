@@ -1,5 +1,4 @@
-using Shared.Entities.Base;
-using Shared.Entities;
+using Shared.Models;
 using Shared.Processor.Application;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

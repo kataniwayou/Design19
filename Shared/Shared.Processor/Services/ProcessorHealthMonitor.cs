@@ -5,6 +5,7 @@ using Shared.Processor.Models;
 using Shared.Services;
 using System.Diagnostics;
 using System.Text.Json;
+using Shared.Models;
 
 namespace Shared.Processor.Services;
 

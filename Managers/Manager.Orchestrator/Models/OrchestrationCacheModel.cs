@@ -1,3 +1,4 @@
+using Shared.Models;
 namespace Manager.Orchestrator.Models;
 
 /// <summary>
