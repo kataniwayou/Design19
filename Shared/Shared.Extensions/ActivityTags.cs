@@ -1,4 +1,4 @@
-namespace Shared.Processor.Constants;
+ namespace Shared.Extensions;
 
 /// <summary>
 /// Common activity tags used throughout the application

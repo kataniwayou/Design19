@@ -7,8 +7,7 @@ using Microsoft.Extensions.Options;
 using Shared.Entities;
 using Shared.MassTransit.Commands;
 using Shared.Models;
-using Shared.Processor.Constants;
-using Shared.Processor.Extensions;
+using Shared.Extensions;
 using Shared.Processor.Models;
 using Shared.Services;
 
@@ -862,11 +861,8 @@ public class ProcessorService : IProcessorService
                 inputData,
                 message.CorrelationId);
 
-            // 4. Extract the ExecutionId from the result data (it may have been updated by the processor)
-            var finalExecutionId = ExtractExecutionIdFromResult(resultData, message.ExecutionId);
-
-            // 5. Validate output data against OutputSchema
-            if (!await ValidateOutputDataAsync(resultData))
+            // 4. Validate output data against OutputSchema
+            if (!await ValidateOutputDataAsync(resultData.SerializedData))
             {
                 var errorMessage = "Output data validation failed against OutputSchema";
                 _logger.LogError(errorMessage);
@@ -877,14 +873,14 @@ public class ProcessorService : IProcessorService
                 }
             }
 
-            // 6. Save result data to cache (skip if final ExecutionId is empty)
-            if (finalExecutionId != Guid.Empty)
+            // 5. Save result data to cache (skip if final ExecutionId is empty)
+            if (resultData.ExecutionId != Guid.Empty)
             {
                 await SaveCachedDataAsync(
                     message.OrchestratedFlowEntityId,
                     message.StepId,
-                    finalExecutionId,
-                    resultData,
+                    resultData.ExecutionId,
+                    resultData.SerializedData,
                     message.CorrelationId);
             }
             else
@@ -909,14 +905,14 @@ public class ProcessorService : IProcessorService
 
             _logger.LogInformation(
                 "Successfully processed activity. ProcessorId: {ProcessorId}, OrchestratedFlowEntityId: {OrchestratedFlowEntityId}, StepId: {StepId}, ExecutionId: {ExecutionId}, Duration: {Duration}ms",
-                message.ProcessorId, message.OrchestratedFlowEntityId, message.StepId, finalExecutionId, stopwatch.ElapsedMilliseconds);
+                message.ProcessorId, message.OrchestratedFlowEntityId, message.StepId, resultData.ExecutionId, stopwatch.ElapsedMilliseconds);
 
             return new ProcessorActivityResponse
             {
                 ProcessorId = processorId,
                 OrchestratedFlowEntityId = message.OrchestratedFlowEntityId,
                 StepId = message.StepId,
-                ExecutionId = finalExecutionId,
+                ExecutionId = resultData.ExecutionId,
                 Status = ActivityExecutionStatus.Completed,
                 CorrelationId = message.CorrelationId,
                 Duration = stopwatch.Elapsed

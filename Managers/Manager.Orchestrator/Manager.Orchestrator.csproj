@@ -40,10 +40,10 @@
     <ProjectReference Include="..\..\Shared\Shared.Configuration\Shared.Configuration.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Entities\Shared.Entities.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Exceptions\Shared.Exceptions.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Extensions\Shared.Extensions.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.HealthChecks\Shared.HealthChecks.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.MassTransit\Shared.MassTransit.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Models\Shared.Models.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Processor\Shared.Processor.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Services\Shared.Services.csproj" />
   </ItemGroup>
 

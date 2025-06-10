@@ -1,6 +1,6 @@
 using Shared.Models;
+namespace Shared.MassTransit.Events;
 
-namespace Shared.Processor.MassTransit.Events;
 
 /// <summary>
 /// Event published when an activity is successfully executed

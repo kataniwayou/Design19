@@ -1,4 +1,4 @@
-namespace Shared.Processor.Constants;
+namespace  Shared.Extensions;
 
 /// <summary>
 /// Activity source names used throughout the application

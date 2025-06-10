@@ -1,4 +1,5 @@
 using Shared.Models;
+using Shared.Processor.Models;
 
 namespace Shared.Processor.Services;
 
@@ -20,7 +21,7 @@ public interface IActivityExecutor
     /// <param name="correlationId">Correlation ID for tracking</param>
     /// <param name="cancellationToken">Cancellation token for the operation</param>
     /// <returns>Result data that will be validated against OutputSchema and saved to cache</returns>
-    Task<string> ExecuteActivityAsync(
+    Task<ActivityExecutionResult> ExecuteActivityAsync(
         Guid processorId,
         Guid orchestratedFlowEntityId,
         Guid stepId,

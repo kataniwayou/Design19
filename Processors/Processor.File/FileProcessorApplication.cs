@@ -35,7 +35,6 @@ public class FileProcessorApplication : BaseProcessorApplication
         Guid correlationId ,
         CancellationToken cancellationToken = default)
     {
-        // HASH VALIDATION TEST: This comment will change the implementation hash to demonstrate validation failure
         // Get logger from service provider
         var logger = ServiceProvider.GetRequiredService<ILogger<FileProcessorApplication>>();
 
@@ -69,11 +68,7 @@ public class FileProcessorApplication : BaseProcessorApplication
             throw new InvalidOperationException($"Failed to parse input data: {ex.Message}");
         }
 
-        // 2. Validate input data against InputSchema (concrete processor responsibility)
-        if (!await ValidateInputDataAsync(inputData))
-        {
-            throw new InvalidOperationException("Input data validation failed against InputSchema");
-        }
+        
 
         // Simulate some processing time
         await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
@@ -134,29 +129,5 @@ public class FileProcessorApplication : BaseProcessorApplication
         };
     }
 
-    /// <summary>
-    /// Validates input data against the input schema
-    /// </summary>
-    /// <param name="inputData">Raw input data string to validate</param>
-    /// <returns>True if validation passes, false otherwise</returns>
-    private async Task<bool> ValidateInputDataAsync(string inputData)
-    {
-        try
-        {
-            var processorService = ServiceProvider.GetService<IProcessorService>();
-            if (processorService == null)
-            {
-                // No processor service available - skip validation
-                return true;
-            }
-
-            return await processorService.ValidateInputDataAsync(inputData);
-        }
-        catch (Exception ex)
-        {
-            var logger = ServiceProvider.GetRequiredService<ILogger<FileProcessorApplication>>();
-            logger.LogError(ex, "Input schema validation failed with exception");
-            return false;
-        }
-    }
+    
 }

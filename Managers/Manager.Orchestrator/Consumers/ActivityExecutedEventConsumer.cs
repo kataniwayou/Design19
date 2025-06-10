@@ -1,12 +1,11 @@
+using System.Diagnostics;
 using Manager.Orchestrator.Models;
 using Manager.Orchestrator.Services;
 using MassTransit;
-using Microsoft.Extensions.Logging;
+using Shared.MassTransit.Commands;
+using Shared.MassTransit.Events;
 using Shared.Models;
-using Shared.Processor.MassTransit.Commands;
-using Shared.Processor.MassTransit.Events;
 using Shared.Services;
-using System.Diagnostics;
 
 namespace Manager.Orchestrator.Consumers;
 

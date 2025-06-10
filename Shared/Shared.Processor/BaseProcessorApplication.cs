@@ -28,67 +28,17 @@ public abstract class BaseProcessorApplication : IActivityExecutor
     protected IServiceProvider ServiceProvider => _host?.Services ?? throw new InvalidOperationException("Host not initialized");
 
     /// <summary>
-    /// Implementation of IActivityExecutor interface - maintains backward compatibility
-    /// </summary>
-    public virtual async Task<string> ExecuteActivityAsync(
-        Guid processorId,
-        Guid orchestratedFlowEntityId,
-        Guid stepId,
-        Guid executionId,
-        List<AssignmentModel> entities,
-        string inputData,
-        Guid correlationId = default,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await ExecuteActivityInternalAsync(
-            processorId,
-            orchestratedFlowEntityId,
-            stepId,
-            executionId,
-            entities,
-            inputData,
-            correlationId,
-            cancellationToken);
-
-        // Create standard result structure for backward compatibility
-        var legacyResult = new
-        {
-            result = result.Result,
-            timestamp = DateTime.UtcNow.ToString("O"),
-            stepId = stepId.ToString(),
-            executionId = result.ExecutionId.ToString(),
-            correlationId = correlationId,
-            status = result.Status,
-            data = JsonSerializer.Deserialize<object>(result.SerializedData),
-            metadata = new
-            {
-                processor = result.ProcessorName,
-                version = result.Version,
-                environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development",
-                machineName = Environment.MachineName,
-                duration = result.Duration.ToString()
-            }
-        };
-
-        return JsonSerializer.Serialize(legacyResult, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        });
-    }
-
-    /// <summary>
     /// Main implementation of activity execution that handles common patterns
     /// Returns structured result with all metadata and serialized data
     /// </summary>
-    public virtual async Task<ActivityExecutionResult> ExecuteActivityInternalAsync(
+    public virtual async Task<ActivityExecutionResult> ExecuteActivityAsync(
         Guid processorId,
         Guid orchestratedFlowEntityId,
         Guid stepId,
         Guid executionId,
         List<AssignmentModel> entities,
         string inputData,
-        Guid correlationId ,
+        Guid correlationId,
         CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
@@ -96,9 +46,11 @@ public abstract class BaseProcessorApplication : IActivityExecutor
 
         try
         {
-            // Simulate some processing time
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+            // Validate input data against InputSchema (concrete processor responsibility)
+            if (!await ValidateInputDataAsync(inputData))
+            {
+                throw new InvalidOperationException("Input data validation failed against InputSchema");
+            }
             // Call the concrete processor (handles parsing and input validation internally)
             var processedData = await ProcessActivityDataAsync(
                 processorId,
@@ -190,6 +142,32 @@ public abstract class BaseProcessorApplication : IActivityExecutor
         public string? ProcessorName { get; set; }
         public string? Version { get; set; }
         public Guid ExecutionId { get; set; }
+    }
+
+    /// <summary>
+    /// Validates input data against the input schema
+    /// </summary>
+    /// <param name="inputData">Raw input data string to validate</param>
+    /// <returns>True if validation passes, false otherwise</returns>
+    private async Task<bool> ValidateInputDataAsync(string inputData)
+    {
+        try
+        {
+            var processorService = ServiceProvider.GetService<IProcessorService>();
+            if (processorService == null)
+            {
+                // No processor service available - skip validation
+                return true;
+            }
+
+            return await processorService.ValidateInputDataAsync(inputData);
+        }
+        catch (Exception ex)
+        {
+            var logger = ServiceProvider.GetRequiredService<ILogger<BaseProcessorApplication>>();
+            logger.LogError(ex, "Output schema validation failed with exception");
+            return false;
+        }
     }
 
     /// <summary>

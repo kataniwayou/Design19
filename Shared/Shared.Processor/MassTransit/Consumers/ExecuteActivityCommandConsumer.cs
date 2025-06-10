@@ -1,13 +1,12 @@
 using Shared.Processor.MassTransit.Commands;
-using Shared.Processor.Constants;
+using Shared.Extensions;
 using Shared.Processor.MassTransit.Events;
-using Shared.Processor.Extensions;
 using Shared.Processor.Models;
 using Shared.Processor.Services;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-
+using Shared.Models;
 namespace Shared.Processor.MassTransit.Consumers;
 
 /// <summary>
